@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CorpusProvider {
-	private static final String PATH_TO_CORPUS = "corpus";
+	private static final String PATH_TO_CORPUS = "news_corpus";
 
 	public List<Post> getPosts() throws FileNotFoundException {
 		List<Post> posts = new ArrayList<>();
