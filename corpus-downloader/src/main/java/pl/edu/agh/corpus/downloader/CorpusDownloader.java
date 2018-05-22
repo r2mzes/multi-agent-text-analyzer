@@ -16,14 +16,14 @@ public class CorpusDownloader {
 		WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance("4a94baec-ff68-4c73-9df1-ae813fae2624");
 
 		Map<String, String> queries = new HashMap<String, String>();
-		queries.put("q", "language:english");
+		queries.put("q", "site_type:news language:english");
 		queries.put("sort", "crawled");
 
 		JsonElement result = webhoseClient.query("filterWebContent", queries);
 
 		for (int i = 0; i < 900; i++) {
 			result = webhoseClient.getNext();
-			try (Writer writer = new FileWriter("corpus/corpus" + "_" + i + ".json")) {
+			try (Writer writer = new FileWriter("news_corpus/corpus" + "_" + i + ".json")) {
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
 				gson.toJson(result, writer);
 			}
