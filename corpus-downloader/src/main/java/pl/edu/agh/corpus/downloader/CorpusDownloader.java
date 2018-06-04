@@ -13,27 +13,22 @@ import java.util.Map;
 public class CorpusDownloader {
 
 	public void getNewsTaggedWithCountryOfOrigin() throws IOException, URISyntaxException {
-		WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance("5db90f02-b5e6-41da-bfc4-45eed26b0e99");
+		WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance("4a94baec-ff68-4c73-9df1-ae813fae2624");
 
 		Map<String, String> queries = new HashMap<String, String>();
-		queries.put("q", "language:english");
+		queries.put("q", "site_type:news language:english");
 		queries.put("sort", "crawled");
-
-		JsonObject outputJSON = new JsonObject();
-
-		JsonArray  threads = new JsonArray();
 
 		JsonElement result = webhoseClient.query("filterWebContent", queries);
 
-		for(int i=0; i<900;i++){
+		for (int i = 0; i < 900; i++) {
 			result = webhoseClient.getNext();
-			threads.addAll(result.getAsJsonObject().getAsJsonArray("posts"));
+			try (Writer writer = new FileWriter("news_corpus/corpus" + "_" + i + ".json")) {
+				Gson gson = new GsonBuilder().setPrettyPrinting().create();
+				gson.toJson(result, writer);
+			}
 		}
-		outputJSON.add("posts", threads);
-		try (Writer writer = new FileWriter("corpus.json")) {
-			Gson gson = new GsonBuilder().create();
-			gson.toJson(outputJSON, writer);
-		}
+
 		System.out.println(result.getAsJsonObject().get("totalResults")); // Print posts count
 	}
 }
