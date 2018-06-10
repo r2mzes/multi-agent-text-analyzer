@@ -33,7 +33,7 @@ public class CorpusProvider {
 	public List<Post> getPosts() throws FileNotFoundException {
 		List<Post> posts = new ArrayList<>();
 
-		File dir = new File(DEFAULT_PATH_TO_CORPUS);
+		File dir = new File(pathToCorpus);
 		File[] directoryListing = dir.listFiles();
 		Type listType = new TypeToken<List<Post>>() {
 		}.getType();

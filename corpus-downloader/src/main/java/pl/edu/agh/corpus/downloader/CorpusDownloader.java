@@ -1,14 +1,17 @@
 package pl.edu.agh.corpus.downloader;
 
-import com.google.gson.*;
-import pl.edu.agh.corpus.downloader.webhose.WebhoseIOClient;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+
+import pl.edu.agh.corpus.downloader.webhose.WebhoseIOClient;
 
 public class CorpusDownloader {
 
