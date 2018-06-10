@@ -6,7 +6,7 @@ import pl.edu.agh.corpus.provider.CorpusProvider;
 
 public class Main {
 
-	static final String PATH_TO_CORPUS = "new_corpus";
+	static final String PATH_TO_CORPUS = "news_corpus";
 	static final String OUTPUT_DIRECTORY_PATH = "results";
 
 	public static void main(String[] args) throws FileNotFoundException {

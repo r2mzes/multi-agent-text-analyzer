@@ -11,6 +11,7 @@ public class CentralAgent implements Runnable {
 
 	@Override
 	public void run() {
+		System.out.println("[Central Agent] Starting.... thread: " + Thread.currentThread());
 		running = true;
 		while (running) {
 			if (Thread.interrupted()) {
@@ -20,6 +21,7 @@ public class CentralAgent implements Runnable {
 	}
 
 	public void stop() {
+		System.out.println("[Central Agent] Stopping");
 		running = false;
 	}
 
@@ -32,6 +34,7 @@ public class CentralAgent implements Runnable {
 	 *            Map<Set<Country>, Set<Tag>>
 	 */
 	public synchronized void submitResults(Map<Set<String>, Set<String>> results) {
+		System.out.println("[Central Agent] results received (size = " + results.size() + ")");
 		tagsPerCountryGroup.putAll(results);
 	}
 }
