@@ -15,6 +15,7 @@ import com.google.gson.stream.JsonReader;
 
 import pl.edu.agh.corpus.provider.model.Post;
 import pl.edu.agh.corpus.provider.model.Thread;
+import pl.edu.agh.corpus.provider.utils.SetUtils;
 
 public class CorpusProvider {
 	private static final String DEFAULT_PATH_TO_CORPUS = "news_corpus";
@@ -54,7 +55,7 @@ public class CorpusProvider {
 		Set<String> allCountries = allPosts.stream().map(Post::getThread).map(Thread::getCountry).distinct()
 				.collect(Collectors.toSet());
 
-		Set<Set<String>> allCountryPowerSet = powerSet(allCountries);
+		Set<Set<String>> allCountryPowerSet = SetUtils.powerSet(allCountries);
 		Set<Set<String>> allCountryCombinations = allCountryPowerSet.stream()
 				.filter(set -> set.size() == countryAmountPerGroup).collect(Collectors.toSet());
 
@@ -65,25 +66,6 @@ public class CorpusProvider {
 					.filter(post -> countryGroup.contains(post.getThread().getCountry())).collect(Collectors.toList()));
 		}
 		return postsByCountryGroup;
-	}
-
-	public <T> Set<Set<T>> powerSet(Set<T> originalSet) {
-		Set<Set<T>> sets = new LinkedHashSet<Set<T>>();
-		if (originalSet.isEmpty()) {
-			sets.add(new LinkedHashSet<T>());
-			return sets;
-		}
-		List<T> list = new ArrayList<T>(originalSet);
-		T head = list.get(0);
-		Set<T> rest = new LinkedHashSet<T>(list.subList(1, list.size()));
-		for (Set<T> set : powerSet(rest)) {
-			Set<T> newSet = new LinkedHashSet<T>();
-			newSet.add(head);
-			newSet.addAll(set);
-			sets.add(newSet);
-			sets.add(set);
-		}
-		return sets;
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
