@@ -31,7 +31,10 @@ public class TextAnalyzer {
 		Thread centralAgentThread = new Thread(centralAgent);
 		centralAgentThread.start();
 
+		int availableThreads = Runtime.getRuntime().availableProcessors();
+		System.out.println("[TextAnalyzer] Creating thread pool of a size: " + availableThreads);
 		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
 		for (List<Post> posts : postsByCountryGroup.values()) {
 			executor.execute(new Agent(centralAgent, posts));
 		}
