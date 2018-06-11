@@ -1,2 +1,4 @@
 rootProject.name = 'multi-agent-text-analyzer'
+include 'corpus-downloader'
+include 'text-analyzer'
 
