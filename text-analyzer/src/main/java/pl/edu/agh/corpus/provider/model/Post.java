@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Post {
 
+	private Tag tag;
 	private Thread thread;
 	private String uuid, url, ord_in_thread, author, published, title, text, highlitText, highlightTitle, language;
 	private List<String> external_links;
@@ -114,5 +115,18 @@ public class Post {
 	public Post setExternal_links(List<String> external_links) {
 		this.external_links = external_links;
 		return this;
+	}
+
+	public Tag getTag() {
+		return tag;
+	}
+
+	public Post setTag(Tag tag) {
+		this.tag = tag;
+		return this;
+	}
+
+	public boolean isTagged() {
+		return tag != null;
 	}
 }

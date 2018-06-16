@@ -3,55 +3,50 @@ package pl.edu.agh.text.analyzer;
 import java.io.IOException;
 import java.util.*;
 
-import org.xml.sax.SAXException;
-import pl.edu.agh.corpus.provider.model.Post;
-
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
+import pl.edu.agh.corpus.provider.model.Post;
+import pl.edu.agh.corpus.provider.model.Tag;
 
 public class Agent implements Runnable {
 
-    private CentralAgent centralAgent;
-    private List<Post> posts;
+	private CentralAgent centralAgent;
+	private List<Post> posts;
 
-    public Agent(CentralAgent centralAgent, List<Post> posts) {
-        this.centralAgent = centralAgent;
-        this.posts = posts;
-    }
+	public Agent(CentralAgent centralAgent, List<Post> posts) {
+		this.centralAgent = centralAgent;
+		this.posts = posts;
+	}
 
-    @Override
-    public void run() {
-        System.out.println("[Agent] Starting... thread: " + Thread.currentThread());
-        Map<Set<String>, Set<String>> tagsPerCountryGroup = null;
+	@Override
+	public void run() {
+		System.out.println("[Agent] Starting... thread: " + Thread.currentThread());
 
-        try {
-            tagsPerCountryGroup = classify(posts);
-        } catch (IOException | ParserConfigurationException | SAXException e) {
-            e.printStackTrace();
-        }
+		Result result = null;
 
-        centralAgent.submitResults(tagsPerCountryGroup);
-    }
+		try {
+			result = classify(posts);
+		} catch (IOException | ParserConfigurationException | SAXException e) {
+			e.printStackTrace();
+		}
 
-    private Map<Set<String>, Set<String>> classify(List<Post> posts) throws IOException, ParserConfigurationException, SAXException {
-        System.out.println("[Agent] Classifying...");
+		centralAgent.submitResults(result);
+	}
 
-        Classifier classifier = new Classifier();
-        Map<Set<String>, Set<String>> collection = new HashMap<>();
-        Set<String> countries = new HashSet<>();
-        Set<String> labels = new HashSet<>();
+	private Result classify(List<Post> posts) throws IOException, ParserConfigurationException, SAXException {
+		System.out.println("[Agent] Classifying...");
 
-        for (Post post : posts) {
-            String country = post.getThread().getCountry();
-            String text = post.getText();
+		Classifier classifier = new Classifier();
+		Result result = new Result();
 
-            String label = classifier.classify(text);
-            if (label.equals("")) continue;
-
-            countries.add(country);
-            labels.add(label);
-        }
-
-        collection.put(countries, labels);
-        return collection;
-    }
+		for (Post post : posts) {
+			String text = post.getText();
+			Tag tag = classifier.classify(text);
+			post.setTag(tag);
+			result.addPost(post);
+		}
+		return result;
+	}
 }

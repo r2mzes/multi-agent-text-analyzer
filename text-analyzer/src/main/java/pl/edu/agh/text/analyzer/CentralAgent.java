@@ -1,13 +1,12 @@
 package pl.edu.agh.text.analyzer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 public class CentralAgent implements Runnable {
 
 	private volatile boolean running;
-	private Map<Set<String>, Set<String>> tagsPerCountryGroup = new HashMap<>();
+	private Set<Result> results = new HashSet<>();
 
 	@Override
 	public void run() {
@@ -30,11 +29,11 @@ public class CentralAgent implements Runnable {
 	 * simply takes a map, which contains a set of countries as a key, for which
 	 * posts where processed and set of tags found for these posts as a value
 	 * 
-	 * @param results
-	 *            Map<Set<Country>, Set<Tag>>
+	 * @param result
+	 *            Set<Result>
 	 */
-	public synchronized void submitResults(Map<Set<String>, Set<String>> results) {
-		System.out.println("[Central Agent] Results received (size = " + results.size() + ")");
-		tagsPerCountryGroup.putAll(results);
+	public synchronized void submitResults(Result result) {
+		System.out.println("[Central Agent] Results received");
+		results.add(result);
 	}
 }
