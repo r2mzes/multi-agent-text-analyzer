@@ -16,7 +16,7 @@ import pl.edu.agh.corpus.downloader.webhose.WebhoseIOClient;
 public class CorpusDownloader {
 
 	public void getNewsTaggedWithCountryOfOrigin() throws IOException, URISyntaxException {
-		WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance("4a94baec-ff68-4c73-9df1-ae813fae2624");
+		WebhoseIOClient webhoseClient = WebhoseIOClient.getInstance("3adbddeb-bb78-4f3e-ab0f-c4aa41ddca34");
 
 		Map<String, String> queries = new HashMap<String, String>();
 		queries.put("q", "site_type:news language:english");
@@ -26,7 +26,7 @@ public class CorpusDownloader {
 
 		for (int i = 0; i < 900; i++) {
 			result = webhoseClient.getNext();
-			try (Writer writer = new FileWriter("news_corpus/corpus" + "_" + i + ".json")) {
+			try (Writer writer = new FileWriter("news_corpus_full/corpus" + "_" + i + ".json")) {
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
 				gson.toJson(result, writer);
 			}
