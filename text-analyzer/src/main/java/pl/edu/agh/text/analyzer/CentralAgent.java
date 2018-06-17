@@ -7,6 +7,7 @@ public class CentralAgent implements Runnable {
 
 	private volatile boolean running;
 	private Set<Result> results = new HashSet<>();
+	private int centralPostCaounter = 0;
 
 	@Override
 	public void run() {
@@ -35,5 +36,7 @@ public class CentralAgent implements Runnable {
 	public synchronized void submitResults(Result result) {
 		System.out.println("[Central Agent] Results received");
 		results.add(result);
+		centralPostCaounter += result.postCounter;
+		System.out.println(centralPostCaounter);
 	}
 }

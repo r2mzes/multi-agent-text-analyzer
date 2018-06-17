@@ -21,7 +21,7 @@ public class Classifier {
 
 	public String makeRequest(String text) throws IOException {
 		final String api = "http://api.meaningcloud.com/class-1.1";
-		final String key = "731de1f60bad5d55bbfc1bae95705f36";
+		final String key = "3b1c6b38cb1c7d83603f0da0322a6da6";
 		final String model = "IPTC_en";
 
 		Request request = new Request(api);

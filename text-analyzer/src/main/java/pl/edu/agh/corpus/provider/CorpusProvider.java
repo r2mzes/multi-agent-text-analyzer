@@ -14,11 +14,9 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 import pl.edu.agh.corpus.provider.model.Post;
-import pl.edu.agh.corpus.provider.model.Thread;
-import pl.edu.agh.corpus.provider.utils.SetUtils;
 
 public class CorpusProvider {
-	private static final String DEFAULT_PATH_TO_CORPUS = "news_corpus";
+	private static final String DEFAULT_PATH_TO_CORPUS = "news_corpus_full";
 
 	private String pathToCorpus;
 
@@ -43,7 +41,7 @@ public class CorpusProvider {
 				JsonReader reader = new JsonReader(new FileReader(child));
 				JsonObject object = gson.fromJson(reader, JsonObject.class);
 				JsonArray postJsonArray = object.getAsJsonArray("posts");
-				posts = gson.fromJson(postJsonArray.toString(), listType);
+				posts.addAll(gson.fromJson(postJsonArray.toString(), listType));
 			}
 		}
 
@@ -52,15 +50,30 @@ public class CorpusProvider {
 
 	public Map<Set<String>, List<Post>> getPostsByCountryGroup(int countryAmountPerGroup) throws FileNotFoundException {
 		List<Post> allPosts = getPosts();
-		Set<String> allCountries = allPosts.stream().map(Post::getThread).map(Thread::getCountry).distinct()
-				.collect(Collectors.toSet());
+		System.out.println("Amount of all posts: " + allPosts.size());
 
-		Set<Set<String>> allCountryPowerSet = SetUtils.powerSet(allCountries);
-		Set<Set<String>> allCountryCombinations = allCountryPowerSet.stream()
-				.filter(set -> set.size() == countryAmountPerGroup).collect(Collectors.toSet());
+		Set<String> allCountries = new HashSet<>();
+		for (Post post : allPosts) {
+			allCountries.add(post.getThread().getCountry());
+		}
+
+		Set<Set<String>> allCountryCombinations = new HashSet<>();
+		Iterator<String> iterator = allCountries.iterator();
+		String previous = iterator.next();
+		while (iterator.hasNext()) {
+			String current = iterator.next();
+			Set<String> subGroup = new HashSet<>();
+			subGroup.add(previous);
+			subGroup.add(current);
+			allCountryCombinations.add(subGroup);
+			previous = current;
+		}
+
+		System.out.println("Countries combination computed");
 
 		Map<Set<String>, List<Post>> postsByCountryGroup = new HashMap<>();
 
+		System.out.println("Adding posts to country groups");
 		for (Set<String> countryGroup : allCountryCombinations) {
 			postsByCountryGroup.put(countryGroup, allPosts.stream()
 					.filter(post -> countryGroup.contains(post.getThread().getCountry())).collect(Collectors.toList()));

@@ -13,7 +13,7 @@ import pl.edu.agh.corpus.provider.model.Post;
 
 public class TextAnalyzer {
 
-	private static final int AMOUNT_OF_COUNTRIES_IN_GROUP = 3;
+	private static final int AMOUNT_OF_COUNTRIES_IN_GROUP = 1;
 
 	private CorpusProvider corpusProvider;
 	private String outputDirectory;
@@ -23,7 +23,7 @@ public class TextAnalyzer {
 		this.outputDirectory = outputDirectory;
 	}
 
-	public void analyze() throws FileNotFoundException {
+	public void analyze() throws FileNotFoundException, InterruptedException {
 		Map<Set<String>, List<Post>> postsByCountryGroup = corpusProvider
 				.getPostsByCountryGroup(AMOUNT_OF_COUNTRIES_IN_GROUP);
 
@@ -31,13 +31,15 @@ public class TextAnalyzer {
 		Thread centralAgentThread = new Thread(centralAgent);
 		centralAgentThread.start();
 
-		int availableThreads = Runtime.getRuntime().availableProcessors();
+		int availableThreads = 4;
 		System.out.println("[TextAnalyzer] Creating thread pool of a size: " + availableThreads);
-		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		ExecutorService executor = Executors.newFixedThreadPool(availableThreads);
 
-		for (List<Post> posts : postsByCountryGroup.values()) {
-			executor.execute(new Agent(centralAgent, posts));
+		for (Map.Entry<Set<String>, List<Post>> entry : postsByCountryGroup.entrySet()) {
+			executor.execute(new Agent(centralAgent, entry.getValue(),
+					entry.getKey().contains("AU") && entry.getKey().contains("AT")));
 		}
+
 		executor.shutdown();
 		try {
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
